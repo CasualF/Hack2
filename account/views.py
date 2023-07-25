@@ -56,3 +56,9 @@ class LogoutView(APIView):
             return Response('You logged out', status=205)
         except:
             return Response('Smth went wrong', status=400)
+
+
+class UserDetailView(generics.ListCreateAPIView):
+    queryset = User.objects.all()
+    serializer_class = RegisterSerializer
+    permission_classes = permissions.IsAdminUser,

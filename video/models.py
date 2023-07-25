@@ -5,8 +5,8 @@ User = get_user_model()
 
 
 class Video(models.Model):
-    title = models.CharField(max_length=50)
-    description = models.TextField()
+    title = models.CharField(max_length=100)
+    description = models.TextField(blank=True, null=True)
     file = models.FileField(upload_to=True)
     created_at = models.DateTimeField(auto_now_add=True)
     author = models.ForeignKey(User, on_delete=models.CASCADE, related_name='account')
