@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth import get_user_model
 from video.models import Video
 
+
 User = get_user_model()
 
 
@@ -15,3 +16,23 @@ class Comment(models.Model):
 
     def __str__(self):
         return f'{self.owner}|{self.video.title}|{self.content}'
+
+
+class Rating(models.Model):
+    RATING_CHOICES = (
+        (1, 'Too bad'),
+        (2, 'Bad'),
+        (3, 'Normal'),
+        (4, 'Good'),
+        (5, 'Excellent')
+    )
+    video = models.ForeignKey(Video, related_name='ratings', on_delete=models.CASCADE)
+    owner = models.ForeignKey(User, related_name='rating', on_delete=models.CASCADE)
+    rating = models.PositiveSmallIntegerField(choices=RATING_CHOICES)
+    created_at = models.DateTimeField(auto_now_add=True)
+    class Meta:
+        unique_together = ['owner', 'video']
+
+
+    def __str__(self):
+        return f'This video: {self.video} with rating: {self.rating}'
