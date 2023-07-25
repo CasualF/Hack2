@@ -35,3 +35,19 @@ class Rating(models.Model):
 
     def __str__(self):
         return f'This video: {self.video} with rating: {self.rating}'
+
+
+class Like(models.Model):
+    owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name='likes')
+    video = models.ForeignKey(Video, on_delete=models.CASCADE, related_name='likes')
+
+    def __str__(self):
+        return f'{self.owner.email} -> {self.video.title}'
+
+
+class Favorite(models.Model):
+    owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name='favorites')
+    video = models.ForeignKey(Video, on_delete=models.CASCADE, related_name='favorites')
+
+    def __str__(self):
+        return self.video.title
