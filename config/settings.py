@@ -42,7 +42,7 @@ INSTALLED_APPS = [
 
     # APPS
     'account',
-    'video'
+    'video',
 
     # LIBRARIES
     'rest_framework',
@@ -96,6 +96,8 @@ DATABASES = {
         "PORT": config('DB_PORT'),
     }
 }
+
+AUTH_USER_MODEL = 'account.CustomUser'
 
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
@@ -162,3 +164,4 @@ EMAIL_PORT = config('EMAIL_PORT')
 EMAIL_USE_TLS = config('EMAIL_USE_TLS')
 EMAIL_HOST_USER = config('EMAIL_HOST_USER')
 EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
+
