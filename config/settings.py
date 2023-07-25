@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     # APPS
     'account',
     'video',
+    'impressions',
 
     # LIBRARIES
     'rest_framework',
