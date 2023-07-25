@@ -5,11 +5,24 @@ from rest_framework.decorators import action
 from .serializers import VideoListSerializer, VideoDetailSerializer
 from .permissions import IsAuthorOrAdmin
 from rest_framework.response import Response
-from impressions.serializers import CommentSerializer
+from impressions.serializers import CommentSerializer, LikedUserSerializer, FavoriteSerializer
+from rest_framework.pagination import PageNumberPagination
+from rest_framework.filters import SearchFilter
+from django_filters.rest_framework import DjangoFilterBackend
+from impressions.models import Like, Favorite
+
+
+class StandartResultPagination(PageNumberPagination):
+    page_size = 5
+    page_query_param = 'page'
 
 
 class VideoViewSet(ModelViewSet):
     queryset = Video.objects.all()
+    pagination_class = StandartResultPagination
+    filter_backends = (SearchFilter, DjangoFilterBackend)
+    search_fields = ('title', 'description')
+    filterset_fields = ('title', 'description')
 
     def perform_create(self, serializer):
         serializer.save(author=self.request.user)
@@ -47,3 +60,35 @@ class VideoViewSet(ModelViewSet):
                 comment.delete()
                 return Response('Successfully deleted', status=204)
         return Response('Not found', status=404)
+
+    @action(methods=['POST', 'GET'], detail=True)
+    def likes(self, request, pk):
+        video = self.get_object()
+        user = request.user
+        if request.method == 'GET':
+            likes = video.likes.all()
+            serializer = LikedUserSerializer(instance=likes, many=True)
+            return Response(serializer.data, status=200)
+
+        elif request.method == 'POST':
+            if user.likes.filter(video=video).exists():
+                user.likes.filter(video=video).delete()
+                return Response('Like was deleted', status=204)
+            Like.objects.create(owner=user, video=video)
+            return Response('Like has been added', status=201)
+
+    @action(methods=['POST', 'GET'], detail=True)
+    def favorites(self, request, pk):
+        video = self.get_object()
+        user = request.user
+        if request.method == 'GET':
+            favorites = video.favorites.all()
+            serializer = FavoriteSerializer(instance=favorites, many=True)
+            return Response(serializer.data, status=200)
+
+        elif request.method == 'POST':
+            if user.favorites.filter(video=video).exists():
+                user.favorites.filter(video=video).delete()
+                return Response('Video was deleted from favorites', status=204)
+            Favorite.objects.create(owner=user, video=video)
+            return Response('Video has been added to favorites', status=201)
