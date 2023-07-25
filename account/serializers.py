@@ -1,5 +1,6 @@
 from rest_framework import serializers
 from django.contrib.auth import get_user_model
+from impressions.serializers import FavoriteSerializer
 
 
 User = get_user_model()
@@ -28,6 +29,11 @@ class RegisterSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         user = User.objects.create_user(**validated_data)
         return user
+
+    def to_representation(self, instance):
+        data = super().to_representation(instance)
+        data['favorites'] = FavoriteSerializer(instance.favorites.all(), many=True, required=False).data
+        return data
 
 
 class ActivationSerializer(serializers.Serializer):
