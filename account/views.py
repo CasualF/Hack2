@@ -1,14 +1,13 @@
 from rest_framework.views import APIView
 from rest_framework import permissions, generics
 from .serializers import RegisterSerializer
-from .send_email import send_activation_email
+from .tasks import send_activation_email
 from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework.response import Response
 from django.contrib.auth import get_user_model
 from django.shortcuts import get_object_or_404
 from rest_framework_simplejwt.tokens import RefreshToken
-from rest_framework.decorators import action
-from rest_framework.viewsets import ModelViewSet
+
 
 User = get_user_model()
 
@@ -22,7 +21,7 @@ class RegistrationView(APIView):
         user = serializer.save()
         if user:
             try:
-                send_activation_email(user.email, 'http://127.0.0.1:8000/api/account/activate/?c='+str(user.activation_code))
+                result = send_activation_email.delay(user.email, user.activation_code)
             except:
                 return Response({'message': 'Registered, but wasnt able to send activation code',
                                  'data': serializer.data}, status=201)
@@ -31,6 +30,8 @@ class RegistrationView(APIView):
 
 
 class ActivationView(APIView):
+    permission_classes = permissions.AllowAny,
+
     def get(self, request):
         code = request.GET.get('c')
         user = get_object_or_404(User, activation_code=code)

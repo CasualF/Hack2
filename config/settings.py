@@ -50,7 +50,8 @@ INSTALLED_APPS = [
     'rest_framework.authtoken',
     'drf_yasg',
     'rest_framework_simplejwt.token_blacklist',
-
+    'django_celery_beat',
+    'django_celery_results',
 ]
 
 MIDDLEWARE = [
@@ -166,3 +167,10 @@ EMAIL_USE_TLS = config('EMAIL_USE_TLS')
 EMAIL_HOST_USER = config('EMAIL_HOST_USER')
 EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
 
+#
+# CELERY_BROKER_URL = 'redis://localhost:6379/'
+# CELERY_ACCEPT_CONTENT = ['application/json']
+# CELERY_RESULT_SERIALIZER = 'json'
+# CELERY_TASK_SERIALIZER = 'json'
+#
+# CELERY_BEAT_SCHEDULER = 'django_celery_beat.schedulers:DatabaseScheduler'
