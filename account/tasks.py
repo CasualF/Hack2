@@ -10,5 +10,5 @@ def send_activation_email(self, email, code):
             f'http://127.0.0.1:8000/api/account/activate/?c={code}\n',
             from_email='dastan12151@gmail.com',
             recipient_list=[str(email).replace(' ', '')],
-            fail_silently=False)
+            fail_silently=True)
     return 'Done'
