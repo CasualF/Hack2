@@ -6,7 +6,7 @@ from rest_framework.response import Response
 
 class RatingSerializer(serializers.ModelSerializer):
     owner = serializers.ReadOnlyField(source='owner.id')
-    product = serializers.ReadOnlyField(source='video.title')
+    title = serializers.ReadOnlyField(source='video.title')
 
     class Meta:
         model = Rating
