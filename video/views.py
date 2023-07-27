@@ -94,7 +94,7 @@ class VideoViewSet(ModelViewSet):
             Favorite.objects.create(owner=user, video=video)
             return Response('Video has been added to favorites', status=201)
 
-    @action(methods=['GET','POST','PUT','DELETE'],detail =True)
+    @action(methods=['GET', 'POST', 'PUT', 'DELETE'],detail =True)
     def rating(self, request, pk):
         video = self.get_object()
         user = request.user
