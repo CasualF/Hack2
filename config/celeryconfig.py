@@ -8,10 +8,3 @@ timezone = 'Asia/Bishkek'
 enable_utc = False
 broker_connection_retry_on_startup = True
 
-task_routes = {
-    'tasks.add': 'low-priority',
-}
-
-task_annotations = {
-    'tasks.add': {'rate_limit': '10/m'}
-}
