@@ -26,7 +26,7 @@ class Rating(models.Model):
         (5, 'Excellent')
     )
     video = models.ForeignKey(Video, related_name='ratings', on_delete=models.CASCADE)
-    owner = models.ForeignKey(User, related_name='rating', on_delete=models.CASCADE)
+    owner = models.ForeignKey(User, related_name='ratings', on_delete=models.CASCADE)
     rating = models.PositiveSmallIntegerField(choices=RATING_CHOICES)
     created_at = models.DateTimeField(auto_now_add=True)
 

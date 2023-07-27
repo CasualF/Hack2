@@ -1,3 +1,4 @@
+from django.db.models import Avg
 from rest_framework import serializers
 from .models import Video
 from impressions.serializers import CommentListSerializer, FavoriteSerializer, LikedUserSerializer
@@ -16,6 +17,9 @@ class VideoDetailSerializer(serializers.ModelSerializer):
 
     def to_representation(self, instance):
         data = super(VideoDetailSerializer, self).to_representation(instance)
+        data['rating'] = instance.ratings.aggregate(
+            Avg('rating')
+        )
         data['like_count'] = instance.likes.count()
         data['likes'] = LikedUserSerializer(instance.likes.all(), many=True, required=False).data
         data['favorite_count'] = instance.favorites.count()

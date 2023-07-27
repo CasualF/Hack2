@@ -6,10 +6,14 @@ from django.conf import settings
 from django.conf.urls.static import static
 from rest_framework import permissions
 from rest_framework.routers import DefaultRouter
+
+import impressions
+from impressions.views import RatingListView
 from video.views import VideoViewSet
 
 router = DefaultRouter()
 router.register('', VideoViewSet)
+
 
 
 schema_view = get_schema_view(
@@ -27,9 +31,11 @@ schema_view = get_schema_view(
 
 urlpatterns = [
     path("admin/", admin.site.urls),
+    path('', include(router.urls)),
     path('docs/', schema_view.with_ui('swagger', cache_timeout=0), name='schema_swagger-ui'),
     path('api/account/', include('account.urls')),
-    path('api/video/' , include(router.urls)),
+    path('api/video/', include(router.urls)),
+    path('api/recommendation/', RatingListView.as_view())
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

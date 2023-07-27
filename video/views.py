@@ -5,11 +5,12 @@ from rest_framework.decorators import action
 from .serializers import VideoListSerializer, VideoDetailSerializer
 from .permissions import IsAuthorOrAdmin
 from rest_framework.response import Response
-from impressions.serializers import CommentSerializer, LikedUserSerializer, FavoriteSerializer
+from impressions.serializers import CommentSerializer, LikedUserSerializer, FavoriteSerializer, RatedSerializer, \
+    RatingSerializer
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.filters import SearchFilter
 from django_filters.rest_framework import DjangoFilterBackend
-from impressions.models import Like, Favorite
+from impressions.models import Like, Favorite, Rating
 
 
 class StandartResultPagination(PageNumberPagination):
@@ -92,3 +93,41 @@ class VideoViewSet(ModelViewSet):
                 return Response('Video was deleted from favorites', status=204)
             Favorite.objects.create(owner=user, video=video)
             return Response('Video has been added to favorites', status=201)
+
+
+    @action(methods=['GET','POST','PUT','DELETE'],detail =True)
+    def rating(self, request, pk):
+        video = self.get_object()
+        user = request.user
+
+        if request.method == 'GET':
+            ratings = video.ratings.all()
+            serializer = RatedSerializer(instance=ratings, many=True)
+            return Response(serializer.data, status=200)
+
+        elif request.method == 'POST':
+            if user.ratings.filter(video=video).exists():
+                return Response('You already rated this video')
+            serializator = RatingSerializer(data=request.data, context={'video': video, 'owner': user})
+            serializator.is_valid(raise_exception=True)
+            serializator.save()
+            return Response('Rating was added', status=201)
+
+
+        elif request.method == 'PUT':
+            user_rating = user.ratings.filter(video=video).first()
+            if user_rating:
+                serializer = RatedSerializer(user_rating, data=request.data)
+                if serializer.is_valid():
+                    serializer.save()
+                    return Response(serializer.data)
+                return Response(serializer.errors, status=400)
+
+        elif request.method =='DELETE':
+            if user.ratings.filter(video=video).exists():
+                user.ratings.filter(video=video).delete()
+                return Response('Rating was deleted', status=204)
+        return Response({'error': 'Rating not found.'}, status=404)
+
+
+
