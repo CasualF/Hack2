@@ -94,7 +94,6 @@ class VideoViewSet(ModelViewSet):
             Favorite.objects.create(owner=user, video=video)
             return Response('Video has been added to favorites', status=201)
 
-
     @action(methods=['GET','POST','PUT','DELETE'],detail =True)
     def rating(self, request, pk):
         video = self.get_object()
@@ -108,11 +107,11 @@ class VideoViewSet(ModelViewSet):
         elif request.method == 'POST':
             if user.ratings.filter(video=video).exists():
                 return Response('You already rated this video')
+
             serializator = RatingSerializer(data=request.data, context={'video': video, 'owner': user})
             serializator.is_valid(raise_exception=True)
             serializator.save()
             return Response('Rating was added', status=201)
-
 
         elif request.method == 'PUT':
             user_rating = user.ratings.filter(video=video).first()
@@ -123,7 +122,7 @@ class VideoViewSet(ModelViewSet):
                     return Response(serializer.data)
                 return Response(serializer.errors, status=400)
 
-        elif request.method =='DELETE':
+        elif request.method == 'DELETE':
             if user.ratings.filter(video=video).exists():
                 user.ratings.filter(video=video).delete()
                 return Response('Rating was deleted', status=204)
