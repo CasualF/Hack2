@@ -147,6 +147,7 @@ DRF_API_LOGGER_DATABASE = True
 DRF_API_LOGGER_PATH_TYPE = 'FULL_PATH'
 
 
+CACHE_TTL = 60 * 15
 CACHES = {
     'default': {
         'BACKEND': 'django_redis.cache.RedisCache',
