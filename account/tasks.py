@@ -2,6 +2,7 @@ from django.core.mail import send_mail
 from config.celery import app
 from rest_framework_simplejwt.token_blacklist.models import OutstandingToken, BlacklistedToken
 from datetime import datetime
+from drf_api_logger.models import APILogsModel
 
 
 @app.task(bind=True)
@@ -21,3 +22,8 @@ def clear_tokens(self):
     BlacklistedToken.objects.filter(token__expires_at__lt=datetime.now()).delete()
     OutstandingToken.objects.filter(expires_at__lt=datetime.now()).delete()
     return 'Deleted expired tokens'
+
+
+@app.task(bind=True)
+def remove_old_logs(self):
+    APILogsModel.objects.filter()
