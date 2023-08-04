@@ -1,4 +1,4 @@
-broker_url = 'redis://localhost:6379/'
+broker_url = 'redis://redis:6379/'
 result_backend = 'django-db'
 
 task_serializer = 'json'

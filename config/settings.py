@@ -1,3 +1,4 @@
+import os
 from pathlib import Path
 from decouple import config
 from datetime import timedelta
@@ -5,6 +6,12 @@ from datetime import timedelta
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+ADMINS = (
+    ('admin@mysite.com',),
+)
+# ADMIN_USERNAME = 'admin'
+ADMIN_EMAIL = 'admin@admin.com'
+ADMIN_INITIAL_PASSWORD = '1'
 
 SECRET_KEY = config('SECRET_KEY')
 
@@ -112,7 +119,7 @@ USE_TZ = True
 
 
 STATIC_URL = "static/"
-
+STATIC_ROOT = os.path.join(BASE_DIR, 'static/')
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
@@ -125,6 +132,9 @@ REST_FRAMEWORK = {
         'rest_framework.authentication.BasicAuthentication',
     ),
 }
+
+REDIS_HOST = 'redis'
+REDIS_PORT = '6379'
 
 
 SIMPLE_JWT = {
@@ -151,7 +161,7 @@ CACHE_TTL = 60 * 15
 CACHES = {
     'default': {
         'BACKEND': 'django_redis.cache.RedisCache',
-        'LOCATION': 'redis://127.0.0.1:6379/',
+        'LOCATION': 'redis://redis:6379/',
         'OPTIONS': {
             'CLIENT_CLASS': 'django_redis.client.DefaultClient'
         },
