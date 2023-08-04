@@ -9,11 +9,18 @@ class VideoListSerializer(serializers.ModelSerializer):
         model = Video
         fields = ['author', 'title', 'created_at']
 
+    # def create(self, validated_data):
+    #     video = Video.objects.create(**validated_data)
+    #     return video
+
 
 class VideoDetailSerializer(serializers.ModelSerializer):
+    author = serializers.ReadOnlyField(source='author.id')
+
     class Meta:
         model = Video
         fields = '__all__'
+
 
     def to_representation(self, instance):
         data = super(VideoDetailSerializer, self).to_representation(instance)
@@ -33,10 +40,9 @@ class VideoDetailSerializer(serializers.ModelSerializer):
             data['is_favorite'] = self.is_favorite(instance, user)
         return data
 
-    def create(self, validated_data):
-        request = self.context.get('request')
-        video = Video.objects.create(author=request.user, **validated_data)
-        return video
+    # def create(self, validated_data):
+    #     video = Video.objects.create(**validated_data)
+    #     return video
 
     @staticmethod
     def is_liked(video, user):

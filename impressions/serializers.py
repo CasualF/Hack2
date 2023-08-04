@@ -39,17 +39,13 @@ class RatingSerializer(serializers.ModelSerializer):
         return attrs
 
 
-
-
 class RatedSerializer(serializers.ModelSerializer):
     owner_email = serializers.ReadOnlyField(source='owner.email')
     video_title = serializers.ReadOnlyField(source='video.title')
 
-
     class Meta:
         model = Rating
         fields = ['owner_email', 'video_title','rating']
-
 
 
 class CommentSerializer(serializers.ModelSerializer):

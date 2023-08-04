@@ -24,6 +24,6 @@ def clear_tokens(self):
     return 'Deleted expired tokens'
 
 
-@app.task(bind=True)
-def remove_old_logs(self):
-    APILogsModel.objects.filter()
+# @app.task(bind=True)
+# def remove_old_logs(self):
+#     APILogsModel.objects.filter()
